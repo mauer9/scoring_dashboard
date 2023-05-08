@@ -78,6 +78,8 @@ def generate_sidebar(SIDEBAR_STYLE):
         style=SIDEBAR_STYLE,
     )
     return sidebar
+
+
 def generate_footer(FOOTER_STYLE):
     footer = html.Footer(
         id='footer',
