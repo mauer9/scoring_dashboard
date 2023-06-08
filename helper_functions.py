@@ -38,7 +38,7 @@ def capture_output(output_stream):
 
 
 def get_all_models():
-    gl = gitlab.Gitlab('http://gitlab.cloud.halykbank.nb', private_token='yBKJTSeuciukPxTfWJ-Z',
+    gl = gitlab.Gitlab('', private_token='',
                        ssl_verify=False, api_version=4)
     project = gl.projects.get(2370)
     repo = project.repository_tree(ref='master')

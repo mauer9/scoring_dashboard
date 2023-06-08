@@ -1,53 +1,16 @@
-######################### TO-DO #########################
-# 1. User-ID based sessions?
-# 2. Redis database when in prod
-# 3. Add dark/light themes
-# 4. Add all models status page (JSON to store all model metrics on GitLab)
+import dash_bootstrap_components as dbc
+import pandas as pd
 
-#########################################################
+import helper_functions
+import logging
+import json
+import sys
 
 from dash import Dash, dcc, html, Input, Output, State
-from flask_caching import Cache
-import dash_bootstrap_components as dbc
-# import dash_core_components as dcc
-# import dash_html_components as html
-# from dash.dependencies import Input, Output, State
-from dash import Dash, dcc, html, Input, Output, ctx
-import dash_bootstrap_components as dbc
-import plotly.express as px
-
-from plotting_functions import plot_hist_dist, plot_feature_importances, create_card, psi_plot_ly, plot_auc_roc, \
-    plot_ks, psi_variable_plot, new_create_card
-from helper_functions import col_dropper, fix_dtypes, DataFrameImputer, AutoPrepareScoreCard
-# import plotly.graph_objects as go
-import pandas as pd
-# from datetime import date
-import sqlite3
-from sklearn.metrics import roc_curve, roc_auc_score, log_loss
-from sklearn.model_selection import train_test_split
-import json
-import helper_functions
-import joblib
-
-from optbinning import BinningProcess
-from optbinning.scorecard import ScorecardMonitoring
-import logging
-import sys
-import io
-from contextlib import redirect_stdout
-import time
-from docxtpl import DocxTemplate, InlineImage
-
-import credit_py_validation as cpv
-
-from plotly.tools import mpl_to_plotly
-
-from page_content import generate_search_bar, generate_navbar, generate_sidebar, generate_footer
+from page_content import generate_navbar, generate_sidebar, generate_footer
 from styles import get_content_style, get_footer_style, get_sidebar_style, get_sidebar_hidden_style, get_modal_style
-import pages.accuracy
-import pages.stability
-
-import logging
+from pages.accuracy import generate_accuracy_page
+from pages.stability import generate_stability_page
 
 logger = logging.getLogger(__name__)
 
@@ -69,13 +32,13 @@ dash_logger = DashLogger(stream=sys.stdout)
 logger.addHandler(dash_logger)
 
 # Global variables
-HALYK_LOGO = 'assets/halyk_logo.png'
+LOGO = '/assets/logo.png'
 # PRIVATE_TOKEN = ''
-model_list = helper_functions.get_all_models()
+# model_list = helper_functions.get_all_models()
 
 app = Dash(external_stylesheets=[dbc.themes.CYBORG])
 
-navbar = generate_navbar(model_list, HALYK_LOGO)
+navbar = generate_navbar(['model1', 'model2'], LOGO)
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 CONTENT_STYLE, CONTENT_STYLE1 = get_content_style()
@@ -324,11 +287,11 @@ def render_page_content(pathname, data):
     stat_tests_report = json.loads(datasets['stat_tests_report'])
 
     if pathname in ["/", "/page-1"]:
-        page_content = pages.accuracy.generate_accuracy_page(incoming_batch_results, test_results, y_test, pd_X_test)
+        page_content = generate_accuracy_page(incoming_batch_results, test_results, y_test, pd_X_test)
         return page_content
 
     elif pathname == "/page-2":
-        page_content = pages.stability.generate_stability_page(incoming_batch_results, test_results, psi_table,
+        page_content = generate_stability_page(incoming_batch_results, test_results, psi_table,
                                                                psi_var_table_sum)
 
         return page_content
