@@ -59,7 +59,7 @@ def generate_navbar(model_list, logo):
 def generate_sidebar(SIDEBAR_STYLE):
     sidebar=html.Div(
         [
-            html.H2("CREMOSYS", className="display-4"),
+            html.H3("CREMOSYS", className="display-4"),
             html.Hr(),
             html.P(
                 "CREdit Risk Model MOnitoring SYStem is for a live observation of model's quality", className="lead"
